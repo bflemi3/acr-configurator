@@ -1,4 +1,7 @@
 # acr-configurator
 
-## Installation
-`node index.js`
+## Getting Started
+```
+npm install
+node index.js
+```
