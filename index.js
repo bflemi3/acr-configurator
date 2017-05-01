@@ -55,7 +55,6 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
     try {
         const result = yield db.select(queries.get.select);
         if(!result || !result.length) return errorHandler(`There was an issue retrieving results.`, response);
-
         response.json(translate(result, translations.serverToClient));
     } catch(error) {
         errorHandler(error, response);
@@ -71,7 +70,6 @@ app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     console.log(`GET /configuration/${request.params.serialNumber}`);
     try {
         const result = yield db.select({ select: queries.get.select, where: { serialNumber: { value: request.params.serialNumber }}});
-
         if(!result) return errorHandler('Configuration object not found.', response, 404);
         response.json(translate(result, translations.serverToClient));
     } catch(error) {
