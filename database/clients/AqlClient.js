@@ -1,6 +1,6 @@
 const AbstractDatabaseClient = require('./AbstractDatabaseClient'),
     Promise = require('bluebird'),
-    queries = require('../../config.json').queries,
+    config = require('../../config.json').queries,
     _ = require('lodash'),
     aql = require('net').Socket(),
     notImplemented = require('../../util/notImplemented');
@@ -76,28 +76,34 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
      * Connect to the aql database
      */
     connect() {
-        aql.connect(this.port, this.host, () => this.emit('connect'));
-        aql.on('close', hadError => this.emit('close', hadError));
-        aql.on('error', error => this.emit('error', error));
+        return new Promise((resolve, reject) => {
+            aql.connect(this.port, this.host, () => {
+                resolve();
+            });
+            aql.on('error', error => reject(error));
+        });
     }
 
     /**
      * Send a select statement to the aql database
      * @param query {Object}
-     * @param closeOnFinish {Boolean} - Close the aql connection after each transaction (Not implemented yet)
+     * @returns {Promise<*>}
      */
-    select(query, closeOnFinish = false) {
+    select(query) {
         return new Promise((resolve, reject) => {
             if(!_.isPlainObject(query)) query = { select: query };
 
             if(!query.select)
                 return reject(new TypeError(`Invalid query object. 'select' must be specified in the query argument`));
 
-            if(!query.from) query.from = queries.get.from;
+            if(!query.from) query.from = config.get.from;
 
-            aql.write(buildSql(query, queries.get), (error, data) => {
-                if(error) return reject(error);
-                resolve(JSON.stringify(data));
+            this.connect(() => {
+                aql.write(buildSql(query, config.get), (error, data) => {
+                    aql.destroy();
+                    if(error) return reject(error);
+                    resolve(JSON.stringify(data));
+                });
             });
         });
     }
