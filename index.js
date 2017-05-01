@@ -12,11 +12,6 @@ const app = require('express')(),
     translate = require('object-translation'),
     translations = config.translations.serverToClient;
 
-// connect to the aql database
-// @todo: Refactor AqlClient to open and close connection on each transaction
-db.connect();
-db.on('connect', () => console.log(`Connected to AQL database on ${config.database.host}:${config.database.port}`));
-
 /**
  * Handles logging errors and responding to the client with error messages
  * @param error
@@ -55,6 +50,7 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
     try {
         const result = yield db.select(queries.get.select);
         if(!result || !result.length) return errorHandler(`There was an issue retrieving results.`, response);
+
         response.json(translate(result, translations.serverToClient));
     } catch(error) {
         errorHandler(error, response);
@@ -70,6 +66,7 @@ app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     console.log(`GET /configuration/${request.params.serialNumber}`);
     try {
         const result = yield db.select({ select: queries.get.select, where: { serialNumber: { value: request.params.serialNumber }}});
+
         if(!result) return errorHandler('Configuration object not found.', response, 404);
         response.json(translate(result, translations.serverToClient));
     } catch(error) {
