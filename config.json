@@ -1,7 +1,7 @@
 {
   "database": {
     "type": "AqlClient",
-    "host": "http://207.201.192.227",
+    "host": "207.201.192.227",
     "port": 11432
   },
   "queries": {

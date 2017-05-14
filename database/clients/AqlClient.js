@@ -6,8 +6,8 @@ const AbstractDatabaseClient = require('./AbstractDatabaseClient'),
     notImplemented = require('../../util/notImplemented');
 
 const queryParts = {
-    select(values) { return `select ${values}`; },
-    from(value) { return `from ${value}`; },
+    select(values) { return `SELECT ${values}`; },
+    from(value) { return `FROM ${value}`; },
     where(clientItems, config) {
         if(!_.isPlainObject(clientItems))
             throw new TypeError(`Unable to build SQL statement. Invalid where object given.`);
@@ -59,7 +59,7 @@ function buildSql(query, config) {
             return queryParts[key](value, config);
         })
         .filter(p => p)
-        .join(' ');
+        .join(' ') + ';';
 }
 
 module.exports = class AqlClient extends AbstractDatabaseClient {
@@ -98,13 +98,15 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
 
             if(!query.from) query.from = config.get.from;
 
-            this.connect(() => {
-                aql.write(buildSql(query, config.get), (error, data) => {
-                    aql.destroy();
-                    if(error) return reject(error);
-                    resolve(JSON.stringify(data));
-                });
-            });
+            this.connect()
+                .then(() => {
+                    aql.write(buildSql(query, config.get), (error, data) => {
+                        aql.destroy();
+                        if(error) return reject(error);
+                        resolve(JSON.stringify(data));
+                    });
+                })
+                .catch(error => reject(error));
         });
     }
 
