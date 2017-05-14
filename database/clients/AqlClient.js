@@ -51,8 +51,13 @@ const whereOperators = {
     }
 };
 
-function buildSql(query, config) {
-    return Object.entries(query)
+function buildSql(parts, config) {
+
+
+
+
+
+    return Object.entries(parts)
         .map(([key, value]) => {
             key = key.toLowerCase();
             if(!_.isFunction(queryParts[key])) return;
@@ -89,14 +94,12 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
      * @param query {Object}
      * @returns {Promise<*>}
      */
-    select(query) {
+    get(query) {
         return new Promise((resolve, reject) => {
-            if(!_.isPlainObject(query)) query = { select: query };
+            if(!_.isPlainObject(query))
+                throw new TypeError(`Invalid argument. 'query' must be an object.`);
 
-            if(!query.select)
-                return reject(new TypeError(`Invalid query object. 'select' must be specified in the query argument`));
-
-            if(!query.from) query.from = config.get.from;
+            sql.select()
 
             this.connect(() => {
                 aql.write(buildSql(query, config.get), (error, data) => {

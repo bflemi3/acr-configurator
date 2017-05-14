@@ -11,6 +11,7 @@ module.exports = class AbstractDatabaseClient extends EventEmitter {
         this.host = config.host;
     }
 
-    select() { notImplemented(); }
+    get() { notImplemented(); }
     update() { notImplemented(); }
+    insert() { notImplemented(); }
 };
