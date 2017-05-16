@@ -5,6 +5,8 @@ const AbstractDatabaseClient = require('./AbstractDatabaseClient'),
     aql = require('net').Socket(),
     notImplemented = require('../../util/notImplemented');
 
+aql.setEncoding('utf8');
+
 const queryParts = {
     select(values) { return `SELECT ${values}`; },
     from(value) { return `FROM ${value}`; },
@@ -100,11 +102,28 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
 
             this.connect()
                 .then(() => {
-                    aql.write(buildSql(query, config.get), (error, data) => {
+                    let buffer = '';
+
+                    aql.write(buildSql(query, config.get));
+
+                    aql.on('error', error => {
+                        reject(error);
                         aql.destroy();
-                        if(error) return reject(error);
-                        resolve(JSON.stringify(data));
                     });
+
+                    aql.on('data', data => {
+                        buffer += data;
+                    });
+
+                    aql.on('end', () => {
+                        try {
+                            resolve(JSON.parse(buffer));
+                        } catch(error) {
+                            reject(error);
+                        }
+                        buffer = '';
+                        aql.end();
+                    })
                 })
                 .catch(error => reject(error));
         });
