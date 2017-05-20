@@ -1,149 +1,224 @@
 {
-    "database": {
-        "type": "AqlClient",
-        "host": "207.201.192.227",
-        "port": 11432
+  "database": {
+    "type": "AqlClient",
+    "host": "...",
+    "port": 0
+  },
+  "queries": {
+    "get": {
+      "from": "ACRCONF",
+      "where": [
+        { "name": "serialNumber", "field": "SW_SERIAL_NUMBER" }
+      ],
+      "select": [
+        "CUSTOMER_NUMBER",
+        "SW_SERIAL_NUMBER",
+        "SYSTEM_NAME",
+        "SYSTEM_VERSION",
+        "OWNER",
+        "BYTE0_BIT1",
+        "BYTE0_BIT2",
+        "BYTE0_BIT3",
+        "BYTE0_BIT4",
+        "BYTE0_BIT5",
+        "BYTE0_BIT6",
+        "BYTE0_BIT7",
+        "BYTE0_BIT8",
+        "BYTE1_BIT1",
+        "BYTE1_BIT2",
+        "BYTE1_BIT3",
+        "BYTE1_BIT4",
+        "BYTE1_BIT5",
+        "BYTE1_BIT6",
+        "BYTE1_BIT7",
+        "BYTE1_BIT8",
+        "BYTE2_BIT1",
+        "BYTE2_BIT2",
+        "BYTE2_BIT3",
+        "BYTE2_BIT4",
+        "BYTE2_BIT5",
+        "BYTE2_BIT6",
+        "BYTE2_BIT7",
+        "BYTE2_BIT8",
+        "BYTE3_BIT1",
+        "BYTE3_BIT2",
+        "BYTE3_BIT3",
+        "BYTE3_BIT4",
+        "BYTE3_BIT5",
+        "BYTE3_BIT6",
+        "BYTE3_BIT7",
+        "BYTE3_BIT8",
+        "BYTE4_BIT1",
+        "BYTE4_BIT2",
+        "BYTE4_BIT3",
+        "BYTE4_BIT4",
+        "BYTE4_BIT5",
+        "BYTE4_BIT6",
+        "BYTE4_BIT7",
+        "BYTE4_BIT8",
+        "BYTE5_BIT1",
+        "BYTE5_BIT2",
+        "BYTE5_BIT3",
+        "BYTE5_BIT4",
+        "BYTE5_BIT5",
+        "BYTE5_BIT6",
+        "BYTE5_BIT7",
+        "BYTE5_BIT8",
+        "BYTE6_BIT1",
+        "BYTE6_BIT2",
+        "BYTE6_BIT3",
+        "BYTE6_BIT4",
+        "BYTE6_BIT5",
+        "BYTE6_BIT6",
+        "BYTE6_BIT7",
+        "BYTE6_BIT8",
+        "BYTE7_BIT1",
+        "BYTE7_BIT2",
+        "BYTE7_BIT3",
+        "BYTE7_BIT4",
+        "BYTE7_BIT5",
+        "BYTE7_BIT6",
+        "BYTE7_BIT7",
+        "BYTE7_BIT8",
+        "BYTE8_BIT1",
+        "BYTE8_BIT2",
+        "BYTE8_BIT3",
+        "BYTE8_BIT4",
+        "BYTE8_BIT5",
+        "BYTE8_BIT6",
+        "BYTE8_BIT7",
+        "BYTE8_BIT8",
+        "BYTE9_BIT1",
+        "BYTE9_BIT2",
+        "BYTE9_BIT3",
+        "BYTE9_BIT4",
+        "BYTE9_BIT5",
+        "BYTE9_BIT6",
+        "BYTE9_BIT7",
+        "BYTE9_BIT8",
+        "LOCATION_MAX",
+        "TERMINAL_MAX",
+        "CUSTOMER_NUMBER",
+        "SOFTWARE_VERSION",
+        "MAX_OMNI_7000",
+        "MAX_ALTERNATE_PROCS",
+        "MAX_POS_LANES",
+        "MAC_ADDRESS_1",
+        "MAC_ADDRESS_2"
+      ]
     },
-    "queries": {
-        "get": {
-            "from": "ACRCONF",
-            "where": [ {
-                "name": "serialNumber",
-                "field": "SW_SERIAL_NUMBER"
-            } ],
-            "select": [
-                "CUSTOMER_NUMBER",
-                "SW_SERIAL_NUMBER",
-                "SYSTEM_NAME",
-                "SYSTEM_VERSION",
-                "OWNER",
-                "BYTE0_BIT1",
-                "BYTE0_BIT2",
-                "BYTE0_BIT3",
-                "BYTE0_BIT4",
-                "BYTE0_BIT5",
-                "BYTE0_BIT6",
-                "BYTE0_BIT7",
-                "BYTE0_BIT8",
-                "BYTE1_BIT1",
-                "BYTE1_BIT2",
-                "BYTE1_BIT3",
-                "BYTE1_BIT4",
-                "BYTE1_BIT5",
-                "BYTE1_BIT6",
-                "BYTE1_BIT7",
-                "BYTE1_BIT8",
-                "BYTE2_BIT1",
-                "BYTE2_BIT2",
-                "BYTE2_BIT3",
-                "BYTE2_BIT4",
-                "BYTE2_BIT5",
-                "BYTE2_BIT6",
-                "BYTE2_BIT7",
-                "BYTE2_BIT8",
-                "BYTE3_BIT1",
-                "BYTE3_BIT2",
-                "BYTE3_BIT3",
-                "BYTE3_BIT4",
-                "BYTE3_BIT5",
-                "BYTE3_BIT6",
-                "BYTE3_BIT7",
-                "BYTE3_BIT8",
-                "BYTE4_BIT1",
-                "BYTE4_BIT2",
-                "BYTE4_BIT3",
-                "BYTE4_BIT4",
-                "BYTE4_BIT5",
-                "BYTE4_BIT6",
-                "BYTE4_BIT7",
-                "BYTE4_BIT8",
-                "BYTE5_BIT1",
-                "BYTE5_BIT2",
-                "BYTE5_BIT3",
-                "BYTE5_BIT4",
-                "BYTE5_BIT5",
-                "BYTE5_BIT6",
-                "BYTE5_BIT7",
-                "BYTE5_BIT8",
-                "BYTE6_BIT1",
-                "BYTE6_BIT2",
-                "BYTE6_BIT3",
-                "BYTE6_BIT4",
-                "BYTE6_BIT5",
-                "BYTE6_BIT6",
-                "BYTE6_BIT7",
-                "BYTE6_BIT8",
-                "BYTE7_BIT1",
-                "BYTE7_BIT2",
-                "BYTE7_BIT3",
-                "BYTE7_BIT4",
-                "BYTE7_BIT5",
-                "BYTE7_BIT6",
-                "BYTE7_BIT7",
-                "BYTE7_BIT8",
-                "BYTE8_BIT1",
-                "BYTE8_BIT2",
-                "BYTE8_BIT3",
-                "BYTE8_BIT4",
-                "BYTE8_BIT5",
-                "BYTE8_BIT6",
-                "BYTE8_BIT7",
-                "BYTE8_BIT8",
-                "BYTE9_BIT1",
-                "BYTE9_BIT2",
-                "BYTE9_BIT3",
-                "BYTE9_BIT4",
-                "BYTE9_BIT5",
-                "BYTE9_BIT6",
-                "BYTE9_BIT7",
-                "BYTE9_BIT8",
-                "LOCATION_MAX",
-                "TERMINAL_MAX",
-                "CUSTOMER_NUMBER",
-                "SOFTWARE_VERSION",
-                "MAX_OMNI_7000",
-                "MAX_ALTERNATE_PROCS",
-                "MAX_POS_LANES",
-                "MAC_ADDRESS_1",
-                "MAC_ADDRESS_2"
-          ]
-        },
-        "update": {}
-    },
-    "translations": {
-        "serverToClient": [ {
-                "source": "pageInfo",
-                "properties": [ "page", "pageSize" ]
-      }, {
-                "source": "pageInfo.count",
-                "target": "count"
-      }, {
-                "source": "rows",
-                "items": [
+    "update": {}
+  },
+  "translations": {
+    "serverToClient": [
+      {
+        "source": "pageInfo",
+        "properties": [ "page", "pageSize" ]
+      },
+      {
+        "source": "pageInfo.count",
+        "target": "count"
+      },
+      {
+        "source": "rows",
+        "items": [
           "customer_number",
-          "owner",
-                    {
-                        "target": "system",
-                        "properties": [
-              "mac_address_.*",
-                            {
-                                "source": "serial_number",
-                                "target": "serialNumber"
-              }, {
-                                "source": "system_(.*)",
-                                "target": "$1"
-              }, {
-                                "target": "constraints",
-                                "properties": [ ".*_max$", "^max_.*" ]
-              }, {
-                                "target": "softwareOptions",
-                                "properties": [ "^byte[\\d]+_.*" ]
+          {
+            "source": "owner",
+            "filter": { "find": "^\\s{17}", "replace": "" }
+          },
+          {
+            "target": "system",
+            "properties": [
+              {
+                "source": "mac_address_.*",
+                "filter": { "find": "^\\s{4}", "replace": "" }
+              },
+              {
+                "source": "serial_number",
+                "target": "serialNumber"
+              },
+              {
+                "source": "system_(.*)",
+                "target": "$1",
+                "filter": { "find": "^\\s{1}", "replace": "" }
+              },
+              {
+                "target": "constraints",
+                "properties": [ ".*_max$", "^max_.*" ]
+              },
+              {
+                "target": "softwareOptions",
+                "properties": [
+                  {
+                    "source": "^byte[\\d]+_.*",
+                    "filter": [
+                      { "find": "Y", "replace": true },
+                      { "find": "N", "replace": false }
+                    ]
+                  }
+                ]
               }
             ]
           }
         ]
       }
     ],
-        "clientToServer": []
-    }
+    "clientToServer": [
+      "pageInfo",
+      {
+        "source": "count",
+        "target": "pageInfo.count"
+      },
+      {
+        "source": "rows",
+        "items": [
+          "customer_number",
+          {
+            "source": "owner",
+            "filter": { "find": ".*", "replace": "                 $&" }
+          },
+          {
+            "source": "system",
+            "target": [
+              {
+                "source": "mac_address_.*",
+                "filter": { "find": ".*", "replace": "    $&" }
+              },
+              {
+                "source": "serialNumber",
+                "target": "serial_number"
+              },
+              {
+                "source": "name",
+                "target": "system_name",
+                "filter": { "find": ".*", "replace": " $&" }
+              },
+              {
+                "source": "version",
+                "target": "system_version",
+                "filter": { "find": ".*", "replace": " $&" }
+              },
+              {
+                "source": "constraints",
+                "target": [ "location_max", "terminal_max", "^max_.*" ]
+              },
+              {
+                "source": "softwareOptions",
+                "target": [
+                  {
+                    "source": "^byte[\\d]+_.*",
+                    "filter": [
+                      { "find": true, "replace": "Y" },
+                      { "find": false, "replace": "N" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
