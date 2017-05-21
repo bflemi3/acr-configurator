@@ -9,7 +9,7 @@ function select(table) {
             if(fields.includes(select.STAR) && fields.length > 1)
                 throw new Error(`Invalid number of select fields. '${select.STAR}' can be the only field in the select.`);
 
-            const sql = `select ${table.getFields(fields).map(f => f.field).join(',')} from ${table.name}`;
+            const sql = `select ${table.getFields(fields, select.STAR).map(f => f.field).join(',')} from ${table.name}`;
             return builder(builders, table, sql);
         }
     };

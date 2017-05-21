@@ -1,7 +1,7 @@
 const builder = require('../builder'),
     comparisonOperators = require('../config/comparisonOperators');
 
-module.exports = function and(table, sql) {
+module.exports = function or(table, sql) {
 
     return {
         and(fieldName) {

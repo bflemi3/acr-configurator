@@ -7,9 +7,9 @@
       "acrconf": {
         "fields": [
           { "name": "serialNumber", "field": "SW_SERIAL_NUMBER" },
+          { "name": "name", "field": "SYSTEM_NAME" },
           "CUSTOMER_NUMBER",
           "SW_SERIAL_NUMBER",
-          "SYSTEM_NAME",
           "SYSTEM_VERSION",
           "OWNER",
           "BYTE0_BIT1",

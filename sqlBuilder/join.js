@@ -1,7 +1,13 @@
 const builder = require('./builder'),
-    FieldNotFoundError = require('./FieldNotFoundError'),
-    comparisonOperators = require('./config/comparisonOperators'),
-    [where, orderBy] = [require('./where'), require('./orderBy')];
+    comparisonOperators = require('./config/comparisonOperators');
+
+function on(table, sql) {
+    return {
+        on(field) {
+            return builder([comparisonOperators], table, `${sql} on ${field}`)
+        }
+    }
+}
 
 module.exports = function join(table, sql) {
 
@@ -16,13 +22,4 @@ module.exports = function join(table, sql) {
         leftJoin: joinImpl('left join'),
         rightJoin: joinImpl('right join')
     };
-};
-
-module.exports = function on(table, sql) {
-
-    return {
-        on(field) {
-            return builder([comparisonOperators], table, `${sql} on ${field}`)
-        }
-    }
 };
