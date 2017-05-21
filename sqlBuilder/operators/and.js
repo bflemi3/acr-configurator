@@ -1,12 +1,13 @@
 const builder = require('../builder'),
-    comparisonOperators = require('../config/comparisonOperators');
+    { getClauses } = require('../where'),
+    or = require('./or');
 
 module.exports = function and(table, sql) {
 
     return {
-        and(fieldName) {
-            const field = table.getFields(fieldName);
-            return builder(comparisonOperators, table, `${sql} and ${table.name}.${field.field}`);
+        and(expression) {
+            const clauses = getClauses(table, expression);
+            return builder([and, or], table, `${sql} and ${clauses}`);
         }
     };
 };

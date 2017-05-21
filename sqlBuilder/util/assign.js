@@ -7,5 +7,5 @@ module.exports = function assign(target, properties, ...args) {
         target = {};
     }
 
-    return Object.assign(target, ...apply(properties, ...args))
+    return Object.assign(target, ...apply(properties, ...args));
 };

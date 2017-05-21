@@ -13,5 +13,5 @@ sql = test.select(sqlBuilder.STAR)
 console.log(`SELECT WHERE with OR ...\n${sql.toString()}`);
 
 sql = test.select(sqlBuilder.STAR)
-    .where({ serialNumber: { gt: '400'} }).or({ name: { equals: 'serialNumber' } });
-console.log(`SELECT WHERE with OR ...\n${sql.toString()}`);
+    .where({ serialNumber: { gt: '400'} }).or({ name: { eq: 'serialNumber' } });
+console.log(`Complex SELECT WHERE with OR ...\n${sql.toString()}`);

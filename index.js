@@ -7,9 +7,23 @@ const app = require('express')(),
     _ = require('lodash'),
     config = require('./config.json'),
     databaseClientProvider = require('./database/databaseClientProvider'),
-    configurations = new (require('./database/repositories/CustomerConfigurationsRepository'))(databaseClientProvider(config.database)),
     translate = require('object-translation'),
     translations = config.translations.serverToClient;
+
+/**
+ * Set database host and port from environment variables and create configurations table
+ * Environment Variables:
+ *   AQL_HOST
+ *   AQL_PORT
+ */
+if(!process.env[config.database.host])
+    throw new Error(`Unable to start configuration node service. Please set the AQL_HOST environment variable.`);
+if(!process.env[config.database.port])
+    throw new Error(`Unable to start configuration node service. Please set the AQL_PORT environment variable.`);
+
+config.database.host = process.env[config.database.host];
+config.database.port = process.env[config.database.port];
+const configurations = new (require('./database/repositories/CustomerConfigurationsRepository'))(databaseClientProvider(config.database));
 
 /**
  * Handles logging errors and responding to the client with error messages

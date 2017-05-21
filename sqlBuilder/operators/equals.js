@@ -5,5 +5,5 @@ module.exports = function equals(table, value) {
         field = table.getFields(value);
     } catch (error) {}
 
-    return `=${field && field.field || expression}`;
+    return `=${field && field.field || value}`;
 };

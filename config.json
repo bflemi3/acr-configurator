@@ -1,8 +1,8 @@
 {
   "database": {
     "type": "AqlClient",
-    "host": "http://207.201.192.227",
-    "port": 11432,
+    "host": "AQL_HOST",
+    "port": "AQL_PORT",
     "tables": {
       "acrconf": {
         "fields": [

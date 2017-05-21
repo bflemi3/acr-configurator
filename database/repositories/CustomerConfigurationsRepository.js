@@ -21,7 +21,7 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
             if(_.isPlainObject(query))
                 sql.where(query);
 
-            return this.databaseClient.get(sql.toString());
+            return databaseClient.get(sql.toString());
         });
 
         /**
