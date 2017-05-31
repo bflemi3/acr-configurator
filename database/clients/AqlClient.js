@@ -1,121 +1,76 @@
 const AbstractDatabaseClient = require('./AbstractDatabaseClient'),
     Promise = require('bluebird'),
-    config = require('../../config.json').queries,
     _ = require('lodash'),
     aql = require('net').Socket(),
     notImplemented = require('../../util/notImplemented');
 
-const queryParts = {
-    select(values) { return `select ${values}`; },
-    from(value) { return `from ${value}`; },
-    where(clientItems, config) {
-        if(!_.isPlainObject(clientItems))
-            throw new TypeError(`Unable to build SQL statement. Invalid where object given.`);
+aql.setEncoding('utf8');
 
-        if(!Array.isArray(config.where))
-            throw new TypeError(`Unable to build SQL statement. Invalid configuration where object. The where property of the configuration must be an Array.`);
+/**
+ * Make a request to the database
+ * @param body
+ */
+function request(body) {
+    return new Promise((resolve, reject) => {
+        let buffer = '';
 
-        function clause(field, operator = '=', value) {
-            return `${field} ${operator} ${value}`;
-        }
+        aql.write(body);
 
-        function resolve(clientItems, operator = whereOperators.and) {
-            let clauses = [],
-                sql = '';
+        aql.on('error', error => {
+            reject(error);
+            aql.destroy();
+        });
 
-            for(let [key, value] of Object.entries(clientItems)) {
-                if(whereOperators[key]) {
-                    clauses.push(sql += `${resolve(value, whereOperators[key])} `);
-                    continue;
-                }
+        aql.on('data', data => {
+            buffer += data;
+        });
 
-                const item = config.where.find(w => w.name === key);
-                if(!item) continue;
-                clauses.push(clause(item.field, value.operator, value.value));
+        aql.on('end', () => {
+            try {
+                resolve(JSON.parse(buffer));
+            } catch(error) {
+                reject(error);
             }
-
-            sql += operator(clauses);
-            return sql;
-        }
-
-        return `where ${resolve(clientItems)}`;
-    }
-};
-
-const whereOperators = {
-    and(clauses) {
-        return !clauses.length ? '' : `(${clauses.join(' AND ')})`;
-    },
-    or(clauses) {
-        return !clauses.length ? '' : `(${clauses.join(' OR ')})`;
-    }
-};
-
-function buildSql(parts, config) {
-
-
-
-
-
-    return Object.entries(parts)
-        .map(([key, value]) => {
-            key = key.toLowerCase();
-            if(!_.isFunction(queryParts[key])) return;
-            return queryParts[key](value, config);
-        })
-        .filter(p => p)
-        .join(' ');
+            buffer = '';
+            aql.end();
+        });
+    });
+}
+/**
+ * Connect to the database
+ * @param host
+ * @param port
+ */
+function connect(host, port) {
+    return new Promise((resolve, reject) => {
+        aql.connect(port, host, () => {
+            resolve(request);
+        });
+        aql.on('error', error => reject(error));
+    });
 }
 
 module.exports = class AqlClient extends AbstractDatabaseClient {
     constructor(config) {
         super(config);
 
-        if(!config.port)
-            throw new Error(`Unable to construct instance of ${this.constructor.name}, missing 'port' configuration value.`);
-
-        this.port = config.port;
-    }
-
-    /**
-     * Connect to the aql database
-     */
-    connect() {
-        return new Promise((resolve, reject) => {
-            aql.connect(this.port, this.host, () => {
-                resolve();
-            });
-            aql.on('error', error => reject(error));
+        /**
+         * Send a select statement to the aql database
+         * @param query {Object}
+         * @returns {Promise<*>}
+         */
+        this.select = Promise.coroutine(function*(sql) {
+            if(!_.isString(sql)) throw new TypeError(`Invalid argument. 'sql' must be a string.`);
+            return (yield connect(this.host, this.port))(sql);
         });
-    }
 
-    /**
-     * Send a select statement to the aql database
-     * @param query {Object}
-     * @returns {Promise<*>}
-     */
-    get(query) {
-        return new Promise((resolve, reject) => {
-            if(!_.isPlainObject(query))
-                throw new TypeError(`Invalid argument. 'query' must be an object.`);
-
-            sql.select()
-
-            this.connect(() => {
-                aql.write(buildSql(query, config.get), (error, data) => {
-                    aql.destroy();
-                    if(error) return reject(error);
-                    resolve(JSON.stringify(data));
-                });
-            });
+        /**
+         * Update the given configuration object in the aql database
+         * @param query
+         */
+        this.update = Promise.coroutine(function*(sql) {
+            if(!_.isString(sql)) throw new TypeError(`Invalid argument. 'sql' must be a string.`);
+            return (yield connect(this.host, this.port))(sql);
         });
-    }
-
-    /**
-     * Update the given configuration object in the aql database
-     * @param query
-     */
-    update(query) {
-        return notImplemented();
     }
 };

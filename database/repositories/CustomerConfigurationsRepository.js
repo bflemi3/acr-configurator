@@ -12,14 +12,14 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
 
         /**
          * Get a collection of Configuration objects
-         * @param query {Object}
+         * @param where {Object}
          * @returns {Promise<Array<Object>>}
          */
-        this.get = Promise.coroutine(function*(query) {
+        this.get = Promise.coroutine(function*(where) {
             const sql = configurations.select(SqlBuilder.STAR);
 
-            if(_.isPlainObject(query))
-                sql.where(query);
+            if(_.isPlainObject(where))
+                sql.where(where);
 
             return databaseClient.get(sql.toString());
         });
@@ -41,12 +41,12 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
          * @returns {Promise<Object>}
          */
         this.update = Promise.coroutine(function*(configuration, where) {
-            let sql = configurations.update(configuration).set(config.get.from);
+            let sql = configurations.update(configuration);
 
             if(_.isPlainObject(where))
-                sql = sql.where(translateWhere(where));
+                sql = sql.where(where);
 
-            return this.databaseClient.insert(sql.toString());
+            return this.databaseClient.update(sql.toString());
         });
     }
 };

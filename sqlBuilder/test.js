@@ -15,3 +15,8 @@ console.log(`SELECT WHERE with OR ...\n${sql.toString()}`);
 sql = test.select(sqlBuilder.STAR)
     .where({ serialNumber: { gt: '400'} }).or({ name: { eq: 'serialNumber' } });
 console.log(`Complex SELECT WHERE with OR ...\n${sql.toString()}`);
+
+sql = test.update({ name: 'brandon', CUSTOMER_NUMBER: 22 }).where({ serialNumber: '11111ll', name: 'bob' });
+console.log(`UPDATE ...\n${sql.toString()}`);
+
+sql = test.update({ name: 'brandon', CUSTOMER_NUMBER: 22 }).where({ serialNumber: '11111ll', namee: 'bob' });

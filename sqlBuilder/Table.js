@@ -1,18 +1,19 @@
 const _ = require('lodash'),
     FieldNotFoundError = require('./FieldNotFoundError'),
+    InvalidArgumentError = require('./InvalidArgumentError'),
     assign = require('./util/assign'),
-    builders = [require('./select')/*, require('./insert'), require('./udpate')*/];
+    builders = [require('./select'), require('./update')];
 
 module.exports = class Table {
     constructor(name, options) {
         if(!_.isString(name))
-            throw new TypeError(`Invalid argument. 'name' must be a string.`);
+            throw new InvalidArgumentError('name', 'string');
 
         if(!options)
-            throw new TypeError(`Invalid argument. 'options' must be an object.`);
+            throw new InvalidArgumentError('options', 'object');
 
         if(!options.fields)
-            throw new TypeError(`Invalid argument. 'options.fields' must be an array of field configurations`);
+            throw new InvalidArgumentError('options.fields', 'Array<field configurations>');
 
         this.name = name;
 

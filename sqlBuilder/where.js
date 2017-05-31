@@ -1,5 +1,6 @@
 const builder = require('./builder'),
     _ = require('lodash'),
+    InvalidArgumentError = require('./InvalidArgumentError'),
     equals = require('./operators/equals'),
     curry = require('./util/curry'),
     comparisonOperators = require('./config/comparisonOperators'),
@@ -27,7 +28,7 @@ function where(table, sql) {
 
 where.getClauses = function(table, expression) {
     if(!table)
-        throw new TypeError(`Invalid argument. 'table' must be an instance of Table.`);
+        throw new InvalidArgumentError('table', 'Table');
 
     const resolve = curry(resolveValue, table),
         clauses = [];

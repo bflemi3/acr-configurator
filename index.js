@@ -8,10 +8,10 @@ const app = require('express')(),
     config = require('./config.json'),
     databaseClientProvider = require('./database/databaseClientProvider'),
     translate = require('object-translation'),
-    translations = config.translations.serverToClient;
+    translations = config.translations;
 
 /**
- * Set database host and port from environment variables and create configurations table
+ * Set database host and port from environment variables and instantiate configurations repository
  * Environment Variables:
  *   AQL_HOST
  *   AQL_PORT
@@ -64,7 +64,7 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
         const result = yield configurations.get();
         if(!result || !result.length) return errorHandler(`There was an issue retrieving results.`, response);
 
-        response.json(translate(result, translations.serverToClient));
+        response.json(translate(translations.serverToClient, result));
     } catch(error) {
         errorHandler(error, response);
     }
@@ -81,7 +81,7 @@ app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, res
         const result = yield configurations.get({ serialNumber: request.params.serialNumber });
         if(!result) return errorHandler('Configuration object not found.', response, 404);
 
-        response.json(translate(result, translations.serverToClient));
+        response.json(translate(translations.serverToClient, result));
     } catch(error) {
         errorHandler(error, response);
     }
@@ -96,9 +96,9 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     console.log(`PUT /configuration/${request.params.serialNumber}`);
     // @todo: This has not been implemented in the AqlClient
     try {
-        const result = yield configurations.update({ serialNumber: request.params.serialNumber }, request.body);
-        if(!result) return errorHandler(`There was an issue updating the configuration object for serial number '${request.params.serialNumber}'.`, response);
 
+        const result = yield configurations.update(translate(translations.clientToServer, request.body), { serialNumber: request.params.serialNumber });
+        if(!result) return errorHandler(`There was an issue updating the configuration object for serial number '${request.params.serialNumber}'.`, response);
         response.json(result);
     } catch(error) {
         errorHandler(error, response);
@@ -111,7 +111,7 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
  */
 app.post('/configuration', Promise.coroutine(function*(request, response) {
     try {
-        const result = yield configurations.insert(request.body);
+        const result = yield configurations.insert(translate(translations.clientToServer, request.body));
         if(!result) return errorHandler(`There was an issue creating the configuration object.`, response);
         response.json(result);
     } catch(error) {
