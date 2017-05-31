@@ -1,4 +1,4 @@
-module.exports = class ExtendableError extends Error {
+module.exports = class AbstractError extends Error {
     constructor(message) {
         super(message);
         this.name = this.constructor.name;
