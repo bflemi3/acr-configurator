@@ -82,8 +82,8 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     // @todo: This has not been implemented in the AqlClient
     try {
         const query = {
-                where: { serialNumber: { value: request.params.serialNumber }},
-                set: translate(translations.clientToServer, request.body)
+                set: translate(translations.clientToServer, request.body),
+                where: { serialNumber: { value: request.params.serialNumber }}
             },
             result = yield db.update(query);
 
