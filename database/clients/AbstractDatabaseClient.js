@@ -19,6 +19,7 @@ module.exports = class AbstractDatabaseClient extends EventEmitter {
         this.port = process.env[config.port];
     }
 
-    select() { notImplemented(); }
+    get() { notImplemented(); }
     update() { notImplemented(); }
+    insert() { notImplemented(); }
 };
