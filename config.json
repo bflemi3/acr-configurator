@@ -1,10 +1,10 @@
 {
   "database": {
     "type": "AqlClient",
-    "host": "...",
-    "port": 0
+    "host": "DATABASE_HOST",
+    "port": "DATABASE_PORT"
   },
-  "queries": {
+  "definitions": {
     "get": {
       "from": "ACRCONF",
       "where": [

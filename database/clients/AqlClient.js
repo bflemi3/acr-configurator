@@ -101,17 +101,23 @@ function request(body) {
             aql.end();
         });
     });
+}
 
+/**
+ * Connect to the aql database
+ */
+function connect(host, port) {
+    return new Promise((resolve, reject) => {
+        aql.connect(port, host, () => {
+            resolve(request);
+        });
+        aql.on('error', error => reject(error));
+    });
 }
 
 module.exports = class AqlClient extends AbstractDatabaseClient {
-    constructor(config) {
+    constructor(config, definitions) {
         super(config);
-
-        if(!config.port)
-            throw new Error(`Unable to construct instance of ${this.constructor.name}, missing 'port' configuration value.`);
-
-        this.port = config.port;
 
         /**
          * Send a select statement to the aql database
@@ -124,33 +130,19 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
             if(!query.select)
                 throw new TypeError(`Invalid query object. 'select' must be specified in the query argument`);
 
-            if(!query.from) query.from = config.get.from;
+            if(!query.from) query.from = definitions.get.from;
 
-            const sql = buildSql(query, config.get);
-            return yield this.connect()(sql);
+            const sql = buildSql(query, definitions.get);
+            return (yield connect(this.host, this.port))(sql);
         });
 
         /**
          * Update the given configuration object in the aql database
          * @param query
          */
-        this.update = Promise.coroutine(function*(configuration) {
-            const sql = buildSql({ update: 'acrconf', set: configuration }),
-                request = yield this.connect();
-
-            return request(sql);
-        });
-    }
-
-    /**
-     * Connect to the aql database
-     */
-    connect() {
-        return new Promise((resolve, reject) => {
-            aql.connect(this.port, this.host, () => {
-                resolve(request);
-            });
-            aql.on('error', error => reject(error));
+        this.update = Promise.coroutine(function*(query) {
+            const sql = buildSql(Object.assign({ update: 'acrconf' }, query), definitions.get);
+            return (yield connect(this.host, this.port))(sql);
         });
     }
 };
