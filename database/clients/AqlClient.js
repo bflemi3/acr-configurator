@@ -59,7 +59,7 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
          * @param query {Object}
          * @returns {Promise<*>}
          */
-        this.select = Promise.coroutine(function*(sql) {
+        this.get = Promise.coroutine(function*(sql) {
             if(!_.isString(sql)) throw new TypeError(`Invalid argument. 'sql' must be a string.`);
             return (yield connect(this.host, this.port))(sql);
         });
