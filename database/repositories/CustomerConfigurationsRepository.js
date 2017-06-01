@@ -2,8 +2,7 @@ const Promise = require('bluebird'),
     AbstractRepository = require('./AbstractRepository'),
     tables = require('../../config.json').database.tables,
     _ = require('lodash'),
-    SqlBuilder = require('sqlBuilder'),
-    sqlBuilder = new SqlBuilder(),
+    sqlBuilder = require('../../sqlBuilder'),
     configurations = sqlBuilder.table('acrconf', tables.acrconf);
 
 module.exports = class CustomerConfigurationsRepository extends AbstractRepository {
@@ -16,7 +15,7 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
          * @returns {Promise<Array<Object>>}
          */
         this.get = Promise.coroutine(function*(where) {
-            const sql = configurations.select(SqlBuilder.STAR);
+            const sql = configurations.select(sqlBuilder.STAR);
 
             if(_.isPlainObject(where))
                 sql.where(where);

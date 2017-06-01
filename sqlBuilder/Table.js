@@ -2,7 +2,7 @@ const _ = require('lodash'),
     FieldNotFoundError = require('./FieldNotFoundError'),
     InvalidArgumentError = require('./InvalidArgumentError'),
     assign = require('./util/assign'),
-    builders = [require('./select'), require('./update')];
+    builders = [require('./select'), require('./update'), require('./insert')];
 
 module.exports = class Table {
     constructor(name, options) {
@@ -19,6 +19,8 @@ module.exports = class Table {
 
         const _fields = options.fields.map(f => ({ field: f.field || f, name: f.name || f }));
         this.getFields = function(fields, constants) {
+            if(!arguments.length) return _fields;
+
             if(_.isPlainObject(fields)) fields = Object.keys(fields);
 
             if (!Array.isArray(fields)) fields = [fields];

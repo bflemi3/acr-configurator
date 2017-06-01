@@ -1,5 +1,5 @@
 const Table = require('./Table'),
-    builders = [require('./select')/*, require('./insert'), require('./update')*/];
+    select = require('./select');
 
 module.exports = (function sqlBuilder() {
     const tables = new Map();
@@ -13,6 +13,6 @@ module.exports = (function sqlBuilder() {
 
     return {
         table,
-        STAR: builders[0].STAR
+        STAR: select.STAR
     }
 })();

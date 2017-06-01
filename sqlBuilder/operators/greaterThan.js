@@ -1,3 +1,5 @@
+const encode = require('../util/encode');
+
 module.exports = function greaterThan(table, value) {
 
     let field;
@@ -5,5 +7,5 @@ module.exports = function greaterThan(table, value) {
         field = table.getFields(value);
     } catch (error) {}
 
-    return `>${field && field.field || value}`;
+    return `>${field && field.field || encode(value)}`;
 };

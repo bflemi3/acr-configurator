@@ -107,5 +107,5 @@ app.post('/configuration', Promise.coroutine(function*(request, response) {
 
 // startup the server
 app.listen(port, () => {
-    console.log(`Listening on: ${port}`);
+    console.log(`Listening on port ${port}`);
 });
