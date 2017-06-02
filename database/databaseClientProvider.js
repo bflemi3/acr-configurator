@@ -4,7 +4,7 @@ const path = require('path'),
         return { [key]: require(path.resolve(dir, file)) };
     });
 
-module.exports = function databaseClientProvider(config) {
+module.exports = function databaseClientProvider(config, ...args) {
     const BASE_ERROR_MSG = 'Unable to provide database client.';
 
     if(!config.type)
@@ -17,5 +17,5 @@ module.exports = function databaseClientProvider(config) {
     if(!(ClientConstructor = clients[config.type.toLowerCase()]))
         throw new Error(`${BASE_ERROR_MSG} No database client found for '${config.type}'.`);
 
-    return new ClientConstructor(config);
+    return new ClientConstructor(config, ...args);
 };

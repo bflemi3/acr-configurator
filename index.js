@@ -7,10 +7,9 @@ const app = require('express')(),
     _ = require('lodash'),
     config = require('./config.json'),
     databaseClientProvider = require('./database/databaseClientProvider'),
-    db = databaseClientProvider(config.database),
-    queries = config.queries,
     translate = require('object-translation'),
-    translations = config.translations;
+    translations = config.translations,
+    configurations = new (require('./database/repositories/CustomerConfigurationsRepository'))(databaseClientProvider(config.database));
 
 /**
  * Handles logging errors and responding to the client with error messages
@@ -48,8 +47,9 @@ process.on('unhandledRejection', error => {
 app.get('/configuration', Promise.coroutine(function*(request, response) {
     console.log(`GET /configuration`);
     try {
-        const result = yield db.select(queries.get.select);
-        if(!result) return errorHandler(`There was an issue retrieving results.`, response);
+        const result = yield configurations.get();
+        if(!result || !result.length) return errorHandler(`There was an issue retrieving results.`, response);
+
         response.json(translate(translations.serverToClient, result));
     } catch(error) {
         errorHandler(error, response);
@@ -64,8 +64,9 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
 app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, response) {
     console.log(`GET /configuration/${request.params.serialNumber}`);
     try {
-        const result = yield db.select({ select: queries.get.select, where: { serialNumber: { value: request.params.serialNumber }}});
+        const result = yield configurations.get({ serialNumber: request.params.serialNumber });
         if(!result) return errorHandler('Configuration object not found.', response, 404);
+
         response.json(translate(translations.serverToClient, result));
     } catch(error) {
         errorHandler(error, response);
@@ -81,14 +82,10 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     console.log(`PUT /configuration/${request.params.serialNumber}`);
     // @todo: This has not been implemented in the AqlClient
     try {
-        const query = {
-                where: { serialNumber: { value: request.params.serialNumber }},
-                set: translate(request.body, translations.clientToServer)
-            },
-            result = yield db.update(query);
 
+        const result = yield configurations.update(translate(translations.clientToServer, request.body), { serialNumber: request.params.serialNumber });
         if(!result) return errorHandler(`There was an issue updating the configuration object for serial number '${request.params.serialNumber}'.`, response);
-        response.json(translate(result, translations.serverToClient));
+        response.json(result);
     } catch(error) {
         errorHandler(error, response);
     }
@@ -99,8 +96,13 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
  * Create a new configuration object
  */
 app.post('/configuration', Promise.coroutine(function*(request, response) {
-    console.log('POST /configuration');
-    response.status(500).send('Not Implemented');
+    try {
+        const result = yield configurations.insert(translate(translations.clientToServer, request.body));
+        if(!result) return errorHandler(`There was an issue creating the configuration object.`, response);
+        response.json(result);
+    } catch(error) {
+        errorHandler(error, response);
+    }
 }));
 
 // startup the server
