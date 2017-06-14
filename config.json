@@ -9,7 +9,6 @@
           { "name": "serialNumber", "field": "SW_SERIAL_NUMBER" },
           { "name": "name", "field": "SYSTEM_NAME" },
           { "name": "customerNumber", "field": "CUSTOMER_NUMBER" },
-          "SW_SERIAL_NUMBER",
           "SYSTEM_VERSION",
           "OWNER",
           "BYTE0_BIT1",
@@ -209,6 +208,52 @@
                       { "find": false, "replace": "N" }
                     ]
                   }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "clientToServerOneRecord": [
+      "customer_number",
+      {
+        "source": "owner",
+        "filter": { "find": ".*", "replace": "                 $&" }
+      },
+      {
+        "source": "system",
+        "target": [
+          {
+            "source": "mac_address_.*",
+            "filter": { "find": ".*", "replace": "    $&" }
+          },
+          {
+            "source": "serialNumber",
+            "target": "serial_number"
+          },
+          {
+            "source": "name",
+            "target": "system_name",
+            "filter": { "find": ".*", "replace": " $&" }
+          },
+          {
+            "source": "version",
+            "target": "system_version",
+            "filter": { "find": ".*", "replace": " $&" }
+          },
+          {
+            "source": "constraints",
+            "target": [ "location_max", "terminal_max", "^max_.*" ]
+          },
+          {
+            "source": "softwareOptions",
+            "target": [
+              {
+                "source": "^byte[\\d]+_.*",
+                "filter": [
+                  { "find": true, "replace": "Y" },
+                  { "find": false, "replace": "N" }
                 ]
               }
             ]

@@ -31,7 +31,8 @@ module.exports = class Table {
             }
 
             return fields.map(f => {
-                const field = _fields.find(_f => _f.name === f || _f === f);
+                f = f.toLowerCase();
+                const field = _fields.find(_f => _f.name.toLowerCase() === f || _f.field.toLowerCase() === f);
                 if (!field) throw new FieldNotFoundError(this.name, fields);
                 return field;
             });
