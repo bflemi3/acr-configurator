@@ -11,6 +11,7 @@ const app = require('express')(),
     translations = config.translations,
     configurations = new ( require('./database/repositories/CustomerConfigurationsRepository') )(databaseClientProvider(config.database));
 
+
 /**
  * Handles logging errors and responding to the client with error messages
  * @param error
@@ -52,7 +53,7 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
         // @TODO - this is a problem!
         // if ( !result || !result.length ) return errorHandler( `There was an issue retrieving results.`, response );
 
-        response.json(translate(translations.serverToClient, result));
+        response.json(result);
     } catch (error) {
         errorHandler(error, response);
     }
@@ -69,7 +70,7 @@ app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, res
         const result = yield configurations.get({ serialNumber: request.params.serialNumber });
         if (!result) return errorHandler('Configuration object not found.', response, 404);
 
-        response.json(translate(translations.serverToClient, result));
+        response.json(result);
     } catch (error) {
         errorHandler(error, response);
     }
@@ -81,6 +82,7 @@ app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, res
  * @param serialNumber
  */
 app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, response) {
+
     console.log(`PUT /configuration/${request.params.serialNumber}`);
     // @todo: This has not been implemented in the AqlClient
     try {
@@ -98,6 +100,7 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
  * Create a new configuration object
  */
 app.post('/configuration', Promise.coroutine(function*(request, response) {
+
     try {
         const result = yield configurations.insert(translate(translations.clientToServer, request.body));
         if (!result) return errorHandler(`There was an issue creating the configuration object.`, response);

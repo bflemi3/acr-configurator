@@ -1,0 +1,3 @@
+set DATABASE_HOST=207.201.192.227
+set DATABASE_PORT=11432
+node index.js
