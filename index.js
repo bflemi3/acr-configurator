@@ -51,7 +51,7 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
         const result = yield configurations.get();
 
         // @TODO - this is a problem!
-        // if ( !result || !result.length ) return errorHandler( `There was an issue retrieving results.`, response );
+        if (!result) return errorHandler(`There was an issue retrieving results.`, response);
 
         response.json(result);
     } catch (error) {
@@ -87,7 +87,7 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     // @todo: This has not been implemented in the AqlClient
     try {
 
-        const result = yield configurations.update(translate(translations.clientToServer, request.body), { serialNumber: request.params.serialNumber });
+        const result = yield configurations.update(translate(translations.clientToServerOneRecord, request.body), { serialNumber: request.params.serialNumber });
         if (!result) return errorHandler(`There was an issue updating the configuration object for serial number '${request.params.serialNumber}'.`, response);
         response.json(result);
     } catch (error) {
