@@ -7,8 +7,8 @@ const app = require('express')(),
     _ = require('lodash'),
     config = require('./config.json'),
     databaseClientProvider = require('./database/databaseClientProvider'),
-    translate = require('object-translation'),
-    translations = config.translations,
+    // translate = require('object-translation'),
+    // translations = config.translations,
     configurations = new ( require('./database/repositories/CustomerConfigurationsRepository') )(databaseClientProvider(config.database));
 
 
@@ -87,7 +87,7 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
     // @todo: This has not been implemented in the AqlClient
     try {
 
-        const result = yield configurations.update(translate(translations.clientToServerOneRecord, request.body), { serialNumber: request.params.serialNumber });
+        const result = yield configurations.update(request.body, { serialNumber: request.params.serialNumber });
         if (!result) return errorHandler(`There was an issue updating the configuration object for serial number '${request.params.serialNumber}'.`, response);
         response.json(result);
     } catch (error) {
@@ -102,7 +102,7 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
 app.post('/configuration', Promise.coroutine(function*(request, response) {
 
     try {
-        const result = yield configurations.insert(translate(translations.clientToServer, request.body));
+        const result = yield configurations.insert(request.body);
         if (!result) return errorHandler(`There was an issue creating the configuration object.`, response);
         response.json(result);
     } catch (error) {

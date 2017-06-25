@@ -9,6 +9,8 @@
           { "name": "serialNumber", "field": "SW_SERIAL_NUMBER" },
           { "name": "name", "field": "SYSTEM_NAME" },
           { "name": "customerNumber", "field": "CUSTOMER_NUMBER" },
+          { "name": "lastUpdated", "field": "ORIGINAL_UPDATE_DATE" },
+          { "name": "createdDate", "field": "ORIGINAL_CONFIG_DATE" },
           "SYSTEM_VERSION",
           "OWNER",
           "BYTE0_BIT1",

@@ -3,7 +3,9 @@ const Promise = require('bluebird'),
     tables = require('../../config.json').database.tables,
     _ = require('lodash'),
     sqlBuilder = require('../../sqlBuilder'),
-    configurations = sqlBuilder.table('acrconf', tables.acrconf);
+    moment = require('moment'),
+    configurations = sqlBuilder.table('acrconf', tables.acrconf),
+    dateFormat = 'MM-DD-YY kk:mm';
 
 module.exports = class CustomerConfigurationsRepository extends AbstractRepository {
     constructor(databaseClient) {
@@ -31,6 +33,18 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
         this.insert = Promise.coroutine(function*(configuration) {
             const sql = configurations.insert(configuration);
             return this.databaseClient.insert(sql.toString());
+            // if(!configuration) return;
+            //
+            // if(!(configuration.createdDate || configuration.ORIGINAL_CONFIG_DATE))
+            //     configuration.createdDate = moment().format(dateFormat);
+            //
+            // let sql = configurations.insert(configuration);
+            // const serialNumber = yield this.databaseClient.insert(sql.toString());
+            // if(!serialNumber)
+            //     throw new Error(`There was an error performing the INSERT and no result was returned from the database.`);
+            //
+            // sql = configurations.select(sqlBuilder.STAR).where({ serialNumber });
+            // return this.databaseClient.get(sql.toString());
         });
 
         /**
@@ -40,12 +54,24 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
          * @returns {Promise<Object>}
          */
         this.update = Promise.coroutine(function*(configuration, where) {
-            let sql = configurations.update(configuration);
+            if(!configuration) return;
 
-            if(_.isPlainObject(where))
+            if(!(configuration.lastUpdated || configuration.ORIGINAL_UPDATE_DATE))
+                configuration.lastUpdated = moment().format(dateFormat);
+
+            let sql = configurations.update(configuration),
+                hasWhere = _.isPlainObject(where);
+
+            if(hasWhere)
                 sql = sql.where(where);
 
-            return this.databaseClient.update(sql.toString());
+            let result = yield this.databaseClient.update(sql.toString());
+            if(!result)
+                throw new Error(`There was an error performing the UPDATE and no result was returned from the database.`);
+
+            sql = configurations.select(sqlBuilder.STAR);
+            if(hasWhere) sql = sql.where(where);
+            return this.databaseClient.get(sql.toString());
         });
     }
 };
