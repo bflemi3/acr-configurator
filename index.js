@@ -1,4 +1,6 @@
-const app = require('express')(),
+const express = require('express'),
+    app = express(),
+    path = require('path'),
     bodyParser = require('body-parser'),
     port = process.env.PORT || 8081,
     url = require('url'),
@@ -7,8 +9,6 @@ const app = require('express')(),
     _ = require('lodash'),
     config = require('./config.json'),
     databaseClientProvider = require('./database/databaseClientProvider'),
-    // translate = require('object-translation'),
-    // translations = config.translations,
     configurations = new ( require('./database/repositories/CustomerConfigurationsRepository') )(databaseClientProvider(config.database));
 
 
@@ -33,6 +33,7 @@ function errorHandler(error, response, status = 500) {
 // setup middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // setup error handlers for uncaught rejections and errors
 process.on('uncaughtException', error => console.error(`Uncaught exception... ${error.stack}`));
@@ -45,7 +46,7 @@ process.on('unhandledRejection', error => {
  * GET /configuration
  * Get all configuration objects from the database
  */
-app.get('/configuration', Promise.coroutine(function*(request, response) {
+app.get('/api/configuration', Promise.coroutine(function*(request, response) {
     console.log(`GET /configuration`);
     try {
         const result = yield configurations.get();
@@ -64,7 +65,7 @@ app.get('/configuration', Promise.coroutine(function*(request, response) {
  * Get one configuration object given the serial number
  * @params serialNumber
  */
-app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, response) {
+app.get('/api/configuration/:serialNumber', Promise.coroutine(function*(request, response) {
     console.log(`GET /configuration/${request.params.serialNumber}`);
     try {
         const result = yield configurations.get({ serialNumber: request.params.serialNumber });
@@ -81,7 +82,7 @@ app.get('/configuration/:serialNumber', Promise.coroutine(function*(request, res
  * Update one configuration object given the serial number
  * @param serialNumber
  */
-app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, response) {
+app.put('/api/configuration/:serialNumber', Promise.coroutine(function*(request, response) {
 
     console.log(`PUT /configuration/${request.params.serialNumber}`);
     // @todo: This has not been implemented in the AqlClient
@@ -99,7 +100,7 @@ app.put('/configuration/:serialNumber', Promise.coroutine(function*(request, res
  * POST /configuration
  * Create a new configuration object
  */
-app.post('/configuration', Promise.coroutine(function*(request, response) {
+app.post('/api/configuration', Promise.coroutine(function*(request, response) {
 
     try {
         const result = yield configurations.insert(request.body);
