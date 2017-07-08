@@ -32,7 +32,7 @@ function request(body) {
                 reject(error);
             }
             buffer = '';
-            aql.end();
+            aql.destroy();
         });
     });
 }
@@ -68,9 +68,6 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
          * Update the given configuration object in the aql database
          * @param query
          */
-        this.update = Promise.coroutine(function*(sql) {
-            if(!_.isString(sql)) throw new TypeError(`Invalid argument. 'sql' must be a string.`);
-            return (yield connect(this.host, this.port))(sql);
-        });
+        this.update = this.get;
     }
 };
