@@ -66,8 +66,16 @@ module.exports = class AqlClient extends AbstractDatabaseClient {
 
         /**
          * Update the given configuration object in the aql database
-         * @param query
+         * @param query {Object}
+         * @returns {Promise<*>}
          */
         this.update = this.get;
+
+        /**
+         * Insert a new configuration object into the aql database
+         * @param query {Object}
+         * @returns {Promise<*>}
+         */
+        this.insert = this.get;
     }
 };

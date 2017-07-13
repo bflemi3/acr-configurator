@@ -31,20 +31,20 @@ module.exports = class CustomerConfigurationsRepository extends AbstractReposito
          * @returns {Promise<Object>}
          */
         this.insert = Promise.coroutine(function*(configuration) {
-            const sql = configurations.insert(configuration);
-            return this.databaseClient.insert(sql.toString());
-            // if(!configuration) return;
-            //
-            // if(!(configuration.createdDate || configuration.ORIGINAL_CONFIG_DATE))
-            //     configuration.createdDate = moment().format(dateFormat);
-            //
-            // let sql = configurations.insert(configuration);
-            // const serialNumber = yield this.databaseClient.insert(sql.toString());
-            // if(!serialNumber)
-            //     throw new Error(`There was an error performing the INSERT and no result was returned from the database.`);
-            //
-            // sql = configurations.select(sqlBuilder.STAR).where({ serialNumber });
-            // return this.databaseClient.get(sql.toString());
+            // const sql = configurations.insert(configuration);
+            // return this.databaseClient.insert(sql.toString());
+            if(!configuration) return;
+
+            if(!(configuration.createdDate || configuration.ORIGINAL_CONFIG_DATE))
+                configuration.createdDate = moment().format(dateFormat);
+
+            let sql = configurations.insert(configuration);
+            const serialNumber = yield this.databaseClient.insert(sql.toString());
+            if(!serialNumber)
+                throw new Error(`There was an error performing the INSERT and no result was returned from the database.`);
+
+            sql = configurations.select(sqlBuilder.STAR).where({ serialNumber });
+            return this.databaseClient.get(sql.toString());
         });
 
         /**
