@@ -1,40 +1,41 @@
 const AbstractDatabaseClient = require('./AbstractDatabaseClient'),
     Promise = require('bluebird'),
     _ = require('lodash'),
-    aql = require('net').Socket(),
+    net = require('net'),
     notImplemented = require('../../util/notImplemented');
 
-aql.setEncoding('utf8');
 
 /**
  * Make a request to the database
- * @param body
+ * @param aql - The aql socket
  */
-function request(body) {
-    return new Promise((resolve, reject) => {
-        let buffer = '';
+function request(aql) {
+    return body => {
+        return new Promise((resolve, reject) => {
+            let buffer = '';
 
-        aql.write(body);
+            aql.write(body);
 
-        aql.on('error', error => {
-            reject(error);
-            aql.destroy();
-        });
-
-        aql.on('data', data => {
-            buffer += data;
-        });
-
-        aql.on('end', () => {
-            try {
-                resolve(JSON.parse(buffer));
-            } catch(error) {
+            aql.on('error', error => {
                 reject(error);
-            }
-            buffer = '';
-            aql.destroy();
+                aql.destroy();
+            });
+
+            aql.on('data', data => {
+                buffer += data;
+            });
+
+            aql.on('end', () => {
+                try {
+                    resolve(JSON.parse(buffer));
+                } catch(error) {
+                    reject(error);
+                }
+                buffer = '';
+                aql.destroy();
+            });
         });
-    });
+    };
 }
 /**
  * Connect to the database
@@ -43,10 +44,13 @@ function request(body) {
  */
 function connect(host, port) {
     return new Promise((resolve, reject) => {
+        const aql = net.Socket();
+        aql.setEncoding('utf8');
+
         aql.connect(port, host, () => {
-            resolve(request);
+            resolve(request(aql));
         });
-        aql.on('error', error => reject(error));
+        aql.on('error', reject);
     });
 }
 
