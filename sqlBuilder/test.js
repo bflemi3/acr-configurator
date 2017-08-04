@@ -19,5 +19,5 @@ console.log(`Complex SELECT WHERE with OR ...\n${sql.toString()}`);
 sql = test.update({ name: 'brandon', CUSTOMER_NUMBER: 22 }).where({ serialNumber: '11111ll', name: 'bob' });
 console.log(`UPDATE ...\n${sql.toString()}`);
 
-sql = test.insert({ name: 'brandon', customherNumber: 22 });
+sql = test.insert({ name: 'brandon', customerNumber: 22 });
 console.log(`INSERT ...\n${sql.toString()}`);

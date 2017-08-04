@@ -1,5 +1,4 @@
 const isPlainObject = require('./util/isPlainObject'),
-    isString = require('./util/isString'),
     isUndefined = require('./util/isUndefined'),
     builder = require('./builder'),
     InvalidArgumentError = require('./InvalidArgumentError'),
@@ -13,14 +12,20 @@ module.exports = function insert(table) {
             if(!isPlainObject(obj))
                 throw new InvalidArgumentError('obj', 'object');
 
-            const { into, values } = Object.entries(obj).reduce((result, { field, name }) => {
+            let fields = table.getFields(obj);
+            if(!fields.some(f => f.identifier)) fields = fields.concat(table.getFields(f => f.identifier));
+
+            const { into, values, identifier } = fields.reduce((result, { field, name, identifier }) => {
+                if(identifier) result.identifier = field;
+
                 if(isUndefined(obj[name])) return result;
+
                 result.into.push(field);
                 result.values.push(encode(obj[name]));
                 return result;
-            }, { into: [], values: [] });
+            }, { into: [], values: [], identifier: undefined });
 
-            const sql = `insert into ${table.name} (${into.join(',')}) values (${values.join(',')})`;
+            const sql = `insert into ${table.name} (NEXT_VAL(${identifier}),${into.join(',')}) values (1,${values.join(',')})`;
             return builder([], table, sql);
         }
     }

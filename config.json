@@ -6,7 +6,7 @@
     "tables": {
       "acrconf": {
         "fields": [
-          { "name": "serialNumber", "field": "SW_SERIAL_NUMBER" },
+          { "name": "serialNumber", "field": "SW_SERIAL_NUMBER", "identifier": true },
           { "name": "name", "field": "SYSTEM_NAME" },
           { "name": "customerNumber", "field": "CUSTOMER_NUMBER" },
           { "name": "lastUpdated", "field": "ORIGINAL_UPDATE_DATE" },
